@@ -6,7 +6,7 @@ cleaned_data = data[["FIPS", "2020_VLFS_Percent_Mar2021"]]
 cleaned_data = cleaned_data.rename(columns={"2020_VLFS_Percent_Mar2021":"VLFS"})
 relative_max = max(cleaned_data["VLFS"])
 
-cleaned_data["HUE"] = cleaned_data["VLFS"] / relative_max
+cleaned_data["HEAT"] = cleaned_data["VLFS"] / relative_max
 print(cleaned_data)
 # print(cleaned_data)
 # # FIR = Food Insecurity Rate
