@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import './Map.css';
 import * as d3 from "d3";
@@ -17,31 +17,31 @@ const Map = () => {
     const tooltipContainer = useRef(null);
     const hasFetchedData = useRef(false);
 
-    const loadMap = (foodInsecurity) => {
+    const loadMap = (foodInsecurityData) => {
         if (!d3Container.current || !tooltipContainer.current) {
             return;
         }
         console.debug("Loaded food insecurity data: ")
-        console.debug(foodInsecurity);
+        console.debug(foodInsecurityData);
         d3.json(countyDataSource, (error, us) => {
             if (error) throw error;
         
             console.debug("Computing heat mapping...");
             let heat_mapping = {};
             let rel_max = 0;
-            for (let i = 0; i < foodInsecurity.length; i++) {
-                let fips = foodInsecurity[i]["FIPS"].toString();
+            for (let i = 0; i < foodInsecurityData.length; i++) {
+                let fips = foodInsecurityData[i]["FIPS"].toString();
         
                 if (fips.length === 4) {
                     fips = "0" + fips;
                 }
         
                 heat_mapping[fips] = {
-                    "HEAT": foodInsecurity[i]["HEAT"],
-                    "VLFS": foodInsecurity[i]["VLFS"]
+                    "HEAT": foodInsecurityData[i]["HEAT"],
+                    "VLFS": foodInsecurityData[i]["VLFS"]
                 }
-                if (foodInsecurity[i]["VLFS"] > rel_max) {
-                    rel_max = foodInsecurity[i]["VLFS"];
+                if (foodInsecurityData[i]["VLFS"] > rel_max) {
+                    rel_max = foodInsecurityData[i]["VLFS"];
                 }
             }
 
@@ -74,23 +74,23 @@ const Map = () => {
                 .attr("class", "state-borders")
                 .attr("d", path(topojson.mesh(us, us.objects.states)));
         });
-    }
+    };
 
+    // Runs on first render
     useEffect(
         () => {
             if (hasFetchedData.current) {
                 return;
             }
             console.debug("Fetching data...");
-            fetch("https://gist.githubusercontent.com/imathur1/fa0c1cabe97bcd194a0d71cfa3415fb0/raw/9d9d4785cf5e21c25fd5a916053fe578b12adbae/2020_food_insecurity.json")
+            fetch(process.env.PUBLIC_URL + "/2020_food_insecurity.json")
                 .then(response => response.json())
                 .then(json => {
                     console.debug("Data fetched!");
                     hasFetchedData.current = true;
                     loadMap(json);
                 });
-        },
-        [d3Container.current, tooltipContainer.current, hasFetchedData.current]
+        }, []
     );
 
     return (
