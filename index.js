@@ -1,6 +1,7 @@
 var svg = d3.select("svg");
 var path = d3.geoPath();
 var original = "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-albers-10m.json";
+var heat_mapping = {};
 
 var foodInsecurity;
 fetch("https://gist.githubusercontent.com/imathur1/fa0c1cabe97bcd194a0d71cfa3415fb0/raw/9d9d4785cf5e21c25fd5a916053fe578b12adbae/2020_food_insecurity.json")
@@ -27,7 +28,6 @@ function loadChart() {
     if (error) throw error;
 
     var rel_max = 0;
-    heat_mapping = {};
     for (var i = 0; i < foodInsecurity.length; i++) {
         var fips = foodInsecurity[i]["FIPS"].toString();
 
@@ -55,7 +55,7 @@ function loadChart() {
         .on("mouseover", (x) => {
           // console.log(x);
           Tooltip
-            .html("<a href='https://www.google.com/search?q=food+banks+near+" + x.properties.name + "+county'>" + x.properties.name + "</a>")
+            .html("<a href='https://www.google.com/search?q=food+banks+near+" + x.properties.name + "+county'>" + x.properties.name + "</a><br>Food Insecure Population: " + (heat_mapping[x.id].VLFS * 100).toFixed(2) + "%")
             .style("left", d3.mouse(d3.event.currentTarget)[0]+10 + "px")
             .style("top", d3.mouse(d3.event.currentTarget)[1] + "px")
             .style("opacity", 1)
