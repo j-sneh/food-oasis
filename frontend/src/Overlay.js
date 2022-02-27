@@ -5,6 +5,7 @@ import originPaths from "./originPaths.json";
 import './Overlay.css';
 import { Loader } from '@googlemaps/js-api-loader';
 import OriginsData from "./food_manufacturers_champaign.json";
+import pantryInformation from './pantryInformation.json';
 import $ from "jquery";
 
 const Overlay = (props) => {
@@ -121,11 +122,19 @@ const Overlay = (props) => {
     }, [props.visible]);
 
     const cssDisplay = props.visible ? "flex" : "none";
+
     return (
         <div id="overlay-background" style={{ display: cssDisplay }} onClick={props.onClick}>
             <div id="overlay" style={{ display: cssDisplay }}>
-                <img src={imgUrl} />
-                {props.countyName}
+                <img src={imgUrl} style={{width: "400px", height: "400px"}} />
+                <ul className="pantry-list">
+                    <li style={{listStyle: "none"}}><h3>Pantries Nearby</h3></li>
+                    {props.countyName === "Champaign" && 
+                        pantryInformation.map((pantry, i) => {
+                            return <li className="pantry-entry" key={i}>{pantry.name}</li>;
+                        })
+                    }
+                </ul>
             </div>
         </div>
     );

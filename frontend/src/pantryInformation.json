@@ -1,0 +1,106 @@
+[
+    {
+        "name" : "Broadlands Food Pantry",
+        "address" : "300 S Lincoln St."
+    },
+    {
+        "name" : "Champaign-Urbana Public Health District", 
+        "address" : "201 W Kenyon Rd"
+    },
+    {
+        "name" : "Church of the Brethren",
+        "address" : "1210 N Neil St."
+    },
+    {
+        "name" : "Community Services of Center of Northern Champaign County", 
+        "address" : "502 E Wabash, STE 1 Rantoul"
+    },
+    {
+        "name" : "Cultivadores Pantry", 
+        "address" : "555 S Maplewood Dr"
+    },
+    {
+        "name" : "Daily Bread Soup Kitchen",
+        "address" : "116 N First St."
+    },
+    {
+        "name" : "St. Vincent DePaul Food Pantry in Holy Cross Catholic Church",
+        "address" : "405 W Clark St"
+    },
+    {
+        "name" : "St. Vincent DePaul – Urbana Inside St. Patrick's Parish Center",
+        "address" : "708 W Main St."
+    },
+    {
+        "name" : "Stone Creek Church Food Pantry",
+        "address" : "2502 S Race Urbana"
+    },
+    {
+        "name" : "The Giving Place - Tolono",
+        "address" : "113 N Bourne St."
+    },
+    {
+        "name" : "Emmanuel Memorial Episcopal",
+        "address" : "208 W University Ave."
+    },
+    {
+        "name" : "Ludlow UMC Food Pantry",
+        "address" : "306 Thomas St."
+    },
+    {
+        "name" : "Ludlow UMC Food Pantry", 
+        "address" : "306 Thomas St."
+    },
+    {
+        "name" : "Mahomet Helping Hands",
+        "address" : "203 E Adams #2 Mahomet"
+    },
+    {
+        "name" : "Ogden United Methodist", 
+        "address" : "105 W Main St."
+    },
+    {
+        "name" : "University Place Christian Church",
+        "address" : "403 S Wright St."
+    },
+    {
+        "name" : "Hope Center Food Pantry In Vineyard Church",
+        "address" : "1802 N Lincoln Urbana"
+    },
+    {
+        "name" : "Wesley Pantry at Parkland College",
+        "address" : "2400 W. Bradley Ave"
+    },
+    {
+        "name" : "Restoration Urban Ministries",
+        "address" : "1213 Parkland Court"
+    },
+    {
+        "name" : "Right Hand Food Pantry in Grace & Truth Church",
+        "address" : "1281 Easter Dr."
+    },
+    {
+        "name" : "Sadorus Community Food Pantry",
+        "address" : "115 E Market St"
+    },
+    {
+        "name" : "Salvation Army", 
+        "address" : "2212 N Market St."
+    },
+    {
+        "name" : "St. Luke’s CME Food Pantry",
+        "address" : "809 5th St."
+    },
+    {
+        "name" : "St. Patrick Food Pantry",
+        "address" : "212 E Washington Tolono"
+    },
+    {
+        "name" : "Wesley Evening Pantry at Wesley United Methodist",
+        "address" : "1203 W Green St."
+    },
+    {
+        "name" : "Windsor Road Christian Church",
+        "address" : "2501 Windsor Rd."
+    }
+]

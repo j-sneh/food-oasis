@@ -3,10 +3,11 @@
     /* position: fixed; */
     /* margin: auto; */
     opacity: 1.0;
-    width: 50%;
-    height: 50%;
+    /* width: 50%; */
+    /* height: 400px; */
     background-color: white;
-    border: 3px solid green;
+    border: 3px solid hsla(14, 100%, 24%, 1.0);
+    border-radius: 15px;
     padding: 10px;
     margin: auto;
 }
@@ -64,3 +65,16 @@
     justify-content: center;
     align-items: center;
 } 
+
+.pantry-list {
+    width: 300px;
+    height: 400px;
+    overflow: auto;
+    /* list-style: none; */
+    /* padding-left: 10px; */
+}
+
+.pantry-entry {
+    font-size: 1.2em;
+    margin-bottom: 5px;
+}
