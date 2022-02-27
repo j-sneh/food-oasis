@@ -18,7 +18,7 @@
   
 .state-borders {
     fill: none;
-    stroke: grey;
+    stroke: black;
     stroke-width: 1px;
     stroke-linejoin: round;
     stroke-linecap: round;
