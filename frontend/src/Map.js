@@ -5,6 +5,67 @@ import Overlay from './Overlay';
 import * as d3 from "d3";
 import * as topojson from "topojson";
 import state_data from "./StateFips.json";
+
+const StateFips = {
+    "10": "DE",
+    "11": "DC",
+    "12": "FL",
+    "13": "GA",
+    "15": "HI",
+    "16": "ID",
+    "17": "IL",
+    "18": "IN",
+    "19": "IA",
+    "20": "KS",
+    "21": "KY",
+    "22": "LA",
+    "23": "ME",
+    "24": "MD",
+    "25": "MA",
+    "26": "MI",
+    "27": "MN",
+    "28": "MS",
+    "29": "MO",
+    "30": "MT",
+    "31": "NE",
+    "32": "NV",
+    "33": "NH",
+    "34": "NJ",
+    "35": "NM",
+    "36": "NY",
+    "37": "NC",
+    "38": "ND",
+    "39": "OH",
+    "40": "OK",
+    "41": "OR",
+    "42": "PA",
+    "44": "RI",
+    "45": "SC",
+    "46": "SD",
+    "47": "TN",
+    "48": "TX",
+    "49": "UT",
+    "50": "VT",
+    "51": "VA",
+    "53": "WA",
+    "54": "WV",
+    "55": "WI",
+    "56": "WY",
+    "60": "AS",
+    "66": "GU",
+    "69": "MP",
+    "72": "PR",
+    "74": "UM",
+    "78": "VI",
+    "01": "AL",
+    "02": "AK",
+    "04": "AZ",
+    "05": "AR",
+    "06": "CA",
+    "08": "CO",
+    "09": "CT"
+  };
+
 const countyDataSource = "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-albers-10m.json";
 
 const colorMapping = (value) => {
@@ -57,6 +118,30 @@ const createLegend = (svg, maxHeat, maxVLFS) => {
     return legend;
 };
 
+
+let countyNames = [];
+
+function showResults() {
+    var val = document.getElementById("q").value;
+
+    let res = document.getElementById("result");
+    res.innerHTML = '';
+    let list = '';
+    let terms = autocompleteMatch(val);
+    for (let i = 0; i < terms.length; i++) {
+      list += '<li>' + terms[i] + '</li>';
+    }
+    res.innerHTML = '<ul>' + list + '</ul>';
+}
+
+function autocompleteMatch(input) {
+    // Get all the terms that start with the input
+    let terms = countyNames.filter(function(term) {
+        return term.toLowerCase().startsWith(input.toLowerCase());
+    });
+    return terms.slice(0, 10);
+}
+
 const Map = () => {
     const d3Container = useRef(null);
     const tooltipContainer = useRef(null);
@@ -75,9 +160,8 @@ const Map = () => {
             if (error) throw error;
 
             let geometries = us.objects.counties.geometries;
-            let countyNames = [];
             for (let i = 0; i < geometries.length; i++) {
-                countyNames.push(geometries[i].properties.name + ", " + geometries[i].properties.state);
+                countyNames.push(geometries[i].properties.name + ", " + StateFips[geometries[i].id.substring(0, 2)]);
             }
 
             console.debug("Computing heat mapping...");
@@ -181,12 +265,19 @@ const Map = () => {
     );
 
     return (
+        <div className="container">
         <div id="map-container" className="col-md-9">
             <Overlay visible={overlayVisible} countyName={overlayCountyName} onClick={() => setOverlayVisible(false)} />
             <div id="tooltip" ref={tooltipContainer}></div>
             <svg id="map-canvas" width="960" height="600" ref={d3Container}></svg>
         </div>
-        
+        <form autoComplete="off">
+            <input type="text" className="form-control" placeholder="Champaign" name="q" id="q" onKeyUp={showResults}>
+            </input>
+            <div id="result"></div>
+        </form>
+        <button type="button" className="btn btn-primary">Primary</button>
+        </div>
     );
 }
 
