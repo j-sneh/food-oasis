@@ -6,6 +6,10 @@ import * as d3 from "d3";
 import * as topojson from "topojson";
 import state_data from "./StateFips.json";
 
+setTimeout(function () {
+    window.scrollTo(0,document.body.scrollHeight);
+}, 3000);
+
 const StateFips = {
     "10": "DE",
     "11": "DC",
@@ -127,6 +131,8 @@ const Map = () => {
     let [overlayStateName, setOverlayStateName] = useState("");
     let [termMatches, setTermMatches] = useState([]);
     let countyNames = useRef([]);
+    let countyNamesToFips = useRef({});
+    let heatMapping = useRef({});
 
     const showResults = (event) => {
         setTermMatches(autocompleteMatch(event.target.value));
@@ -144,6 +150,10 @@ const Map = () => {
         return terms.slice(0, 10);
     }
 
+    const infoClick = (event) => {
+
+    }
+
 
     const loadMap = (foodInsecurityData) => {
         if (!d3Container.current || !tooltipContainer.current) {
@@ -157,10 +167,10 @@ const Map = () => {
             let geometries = us.objects.counties.geometries;
             for (let i = 0; i < geometries.length; i++) {
                 countyNames.current.push(geometries[i].properties.name + ", " + StateFips[geometries[i].id.substring(0, 2)]);
+                countyNamesToFips.current[geometries[i].properties.name + ", " + StateFips[geometries[i].id.substring(0, 2)]] = geometries[i].id;
             }
 
             console.debug("Computing heat mapping...");
-            let heatMapping = {};
             let maxHeat = 0;
             let maxVLFS = 0;
             for (let i = 0; i < foodInsecurityData.length; i++) {
@@ -170,7 +180,7 @@ const Map = () => {
                     fips = "0" + fips;
                 }
         
-                heatMapping[fips] = {
+                heatMapping.current[fips] = {
                     "HEAT": foodInsecurityData[i]["HEAT"],
                     "VLFS": foodInsecurityData[i]["VLFS"]
                 }
@@ -189,13 +199,13 @@ const Map = () => {
             const legend = createLegend(svg, maxHeat, maxVLFS);      
 
             // zoom in and zoom out on mouse scroll
-            const zoom = d3.zoom()
-                .scaleExtent([1, 8])
-                .on("zoom", () => {
-                    svg.selectAll("path")
-                        .attr("transform", d3.event.transform)
-                });
-            svg.call(zoom);
+            // const zoom = d3.zoom()
+            //     .scaleExtent([1, 8])
+            //     .on("zoom", () => {
+            //         svg.selectAll("path")
+            //             .attr("transform", d3.event.transform)
+            //     });
+            // svg.call(zoom);
             
             console.debug("Inserting SVG elements with d3...");
             const elem = svg.append("g")
@@ -206,7 +216,7 @@ const Map = () => {
             const onMouseOver = (elem) => {
                 const coords = d3.mouse(d3.event.currentTarget);
                 tooltip
-                    .html(elem.properties.name + "<br>Food Insecure Population: " + (heatMapping[elem.id].VLFS * 100).toFixed(2) + "%")
+                    .html(elem.properties.name + "<br>Food Insecure Population: " + (heatMapping.current[elem.id].VLFS * 100).toFixed(2) + "%")
                     .style("left", coords[0] + 20 + "px")
                     .style("top", coords[1] + "px")
                     .style("display", "block");
@@ -230,7 +240,7 @@ const Map = () => {
                 .data(topojson.feature(us, us.objects.counties).features)
                 .enter().append("path")
                 .attr("d", path)
-                .attr("fill", d => colorMapping(heatMapping[d.id]["HEAT"]))
+                .attr("fill", d => colorMapping(heatMapping.current[d.id]["HEAT"]))
                 .attr("stroke", "lightgrey")
                 .on("mouseover", onMouseOver)
                 .on("mouseleave", onMouseLeave)
@@ -260,7 +270,16 @@ const Map = () => {
     );
 
     return (
-        <div className="container">
+        <div>
+            <div style={{marginBottom: "80px"}} className="container">
+            <div className="row mb-2">
+                <div data-bs-toggle="modal" data-bs-target="#infoModal" style={{cursor: "pointer"}} onClick={infoClick()}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-info-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                    </svg>                 
+                </div>
+            </div>
             <div className="row">
                 <div id="map-container" className="col-md-9">
                     <Overlay visible={overlayVisible} countyName={overlayCountyName} stateName={overlayStateName} onClick={() => setOverlayVisible(false)} />
@@ -269,22 +288,31 @@ const Map = () => {
                 </div>
                 <div className="col">
                     <form autoComplete="off">
-                        <input type="text" className="form-control" placeholder="Champaign" name="q" id="q" onChange={showResults} />
+                        <input type="text" className="form-control" placeholder="Search County" name="q" id="q" onChange={showResults} />
                         <div id="result">
-                            <ul>
-                                {termMatches.map((term, i) => <li style={{cursor: "pointer"}} onClick={() => {
+                            <ul style={{paddingLeft: "5px", listStyle: "none"}} className="mt-2">
+                                {[].concat(termMatches).sort((a, b) => {
+                                    return heatMapping.current[countyNamesToFips.current[b]]["VLFS"] * 100 - heatMapping.current[countyNamesToFips.current[a]]["VLFS"] * 100
+                                }).map((term, i) => <li style={{cursor: "pointer"}} onClick={() => {
                                     console.log(`Clicked on ${term}`);
                                     const name = term.split(", ")[0];
                                     setOverlayCountyName(name);
                                     const stateName = term.split(", ")[1];
                                     setOverlayStateName(stateName);
                                     setOverlayVisible(true);
-                                }} key={i}>{term}</li>)}
+                                }} key={i}>{term} <span style={{backgroundColor: colorMapping(heatMapping.current[countyNamesToFips.current[term]]["HEAT"]), fontSize: "12px"}}
+                                    className="badge float-end">{(heatMapping.current[countyNamesToFips.current[term]]["VLFS"] * 100).toFixed(2) + "%"}
+                                    </span></li>)}
                             </ul>
                         </div>
                     </form>
                 </div>
             </div>
+            </div>
+            <footer className="text-center text-lg-start text-white" style={{backgroundColor: "#3e4551"}}>
+                <div className="text-center p-3" style={{backgroundColor: "rgba(0, 0, 0, 0.2)"}}> Made with ❤️ by <a style={{color: "rgb(255, 255, 255)"}} target="_blank" href="https://github.com/AdeliaSolarman">Adelia</a>, <a style={{color: "rgb(255, 255, 255)"}} target="_blank" href="https://github.com/Debusan13">Devak</a>, <a style={{color: "rgb(255, 255, 255)"}} target="_blank" href="https://github.com/imathur1">Ishaan</a>, <a style={{color: "rgb(255, 255, 255)"}} target="_blank" href="https://github.com/j-sneh">Jonathan</a>, <a style={{color: "rgb(255, 255, 255)"}} target="_blank" href="https://github.com/LouisAsanaka">Louis</a>, and <a style={{color: "rgb(255, 255, 255)"}} target="_blank" href="https://github.com/21xiaofanli">Xiaofan</a>
+                </div>
+            </footer>
         </div>
     );
 }
