@@ -118,30 +118,6 @@ const createLegend = (svg, maxHeat, maxVLFS) => {
     return legend;
 };
 
-
-let countyNames = [];
-
-function showResults() {
-    var val = document.getElementById("q").value;
-
-    let res = document.getElementById("result");
-    res.innerHTML = '';
-    let list = '';
-    let terms = autocompleteMatch(val);
-    for (let i = 0; i < terms.length; i++) {
-      list += '<li>' + terms[i] + '</li>';
-    }
-    res.innerHTML = '<ul>' + list + '</ul>';
-}
-
-function autocompleteMatch(input) {
-    // Get all the terms that start with the input
-    let terms = countyNames.filter(function(term) {
-        return term.toLowerCase().startsWith(input.toLowerCase());
-    });
-    return terms.slice(0, 10);
-}
-
 const Map = () => {
     const d3Container = useRef(null);
     const tooltipContainer = useRef(null);
@@ -149,6 +125,25 @@ const Map = () => {
     let [overlayVisible, setOverlayVisible] = useState(false);
     let [overlayCountyName, setOverlayCountyName] = useState("");
     let [overlayStateName, setOverlayStateName] = useState("");
+    let [termMatches, setTermMatches] = useState([]);
+    let countyNames = useRef([]);
+
+    const showResults = (event) => {
+        setTermMatches(autocompleteMatch(event.target.value));
+    }
+
+    function autocompleteMatch(input) {
+        if (input === "") {
+            return [];
+        }
+
+        // Get all the terms that start with the input
+        let terms = countyNames.current.filter(function(term) {
+            return term.toLowerCase().startsWith(input.toLowerCase());
+        });
+        return terms.slice(0, 10);
+    }
+
 
     const loadMap = (foodInsecurityData) => {
         if (!d3Container.current || !tooltipContainer.current) {
@@ -161,7 +156,7 @@ const Map = () => {
 
             let geometries = us.objects.counties.geometries;
             for (let i = 0; i < geometries.length; i++) {
-                countyNames.push(geometries[i].properties.name + ", " + StateFips[geometries[i].id.substring(0, 2)]);
+                countyNames.current.push(geometries[i].properties.name + ", " + StateFips[geometries[i].id.substring(0, 2)]);
             }
 
             console.debug("Computing heat mapping...");
@@ -201,7 +196,7 @@ const Map = () => {
                         .attr("transform", d3.event.transform)
                 });
             svg.call(zoom);
-
+            
             console.debug("Inserting SVG elements with d3...");
             const elem = svg.append("g")
                 .attr("class", "counties")
@@ -274,9 +269,19 @@ const Map = () => {
                 </div>
                 <div className="col">
                     <form autoComplete="off">
-                        <input type="text" className="form-control" placeholder="Champaign" name="q" id="q" onKeyUp={showResults}>
-                        </input>
-                        <div id="result"></div>
+                        <input type="text" className="form-control" placeholder="Champaign" name="q" id="q" onChange={showResults} />
+                        <div id="result">
+                            <ul>
+                                {termMatches.map((term, i) => <li style={{cursor: "pointer"}} onClick={() => {
+                                    console.log(`Clicked on ${term}`);
+                                    const name = term.split(", ")[0];
+                                    setOverlayCountyName(name);
+                                    const stateName = term.split(", ")[1];
+                                    setOverlayStateName(stateName);
+                                    setOverlayVisible(true);
+                                }} key={i}>{term}</li>)}
+                            </ul>
+                        </div>
                     </form>
                 </div>
             </div>
