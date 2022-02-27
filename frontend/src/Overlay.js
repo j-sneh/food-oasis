@@ -1,10 +1,9 @@
 import React, { useEffect, useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
-
+import originPoints from "./originPoints.json";
 import './Overlay.css';
 import { Loader } from '@googlemaps/js-api-loader';
 import OriginsData from "./food_manufacturers_champaign.json";
-import originPoints from "./originPoints.json";
 import $ from "jquery";
 
 const Overlay = (props) => {
@@ -14,24 +13,30 @@ const Overlay = (props) => {
 
     const loadDirections = (g) => {
         const directionsService = new g.maps.DirectionsService();
-        directionsService.route(
-            {
-                destination: "232 Burwash Ave, Savoy, IL",
-                origin: "201 N Goodwin Ave, Urbana, IL",
-                travelMode: "DRIVING"
-            },
-            (results, status) => {
-                // console.log(results);
-                // console.log(status);
-                let location = `${props.countyName}, ${props.stateName}`;
-                console.log(results.routes[0].overview_polyline);
-                setImgUrl("https://maps.googleapis.com/maps/api/staticmap?center=" + location
-                + "&zoom=10&size=400x400"
-                + "&path=weight:3%7Ccolor:blue%7Cenc:" + results.routes[0].overview_polyline
-                + "&key=" + process.env.REACT_APP_API_KEY);
-                console.log(imgUrl);
+        let location = `${props.countyName}, ${props.stateName}`;
+        let paths = "";
+        Promise.all(OriginsData.map(coords => {
+            return directionsService.route(
+                {
+                    destination: "1012 W Illinois St, Urbana, IL",
+                    origin: new g.maps.LatLng(coords.lat, coords.lng),
+                    travelMode: "DRIVING"
+                }
+                   // paths = paths + "&path=weight:3%7Ccolor:blue%7Cenc:" + results.routes[0].overview_polyline;
+            );
+        })).then(
+            (results) => {
+                console.log(results);
             }
         );
+
+        console.log("https://maps.googleapis.com/maps/api/staticmap?center=" + location
+        + "&zoom=10&size=400x400" + paths 
+        + "&key=" + process.env.REACT_APP_API_KEY)
+
+        // setImgUrl("https://maps.googleapis.com/maps/api/staticmap?center=" + location
+        //         + "&zoom=10&size=400x400" + paths 
+        //         + "&key=" + process.env.REACT_APP_API_KEY);
     };
 
     const getOriginsPoints = (county, state) => {
