@@ -12,26 +12,31 @@ const Overlay = (props) => {
         const directionsService = new g.maps.DirectionsService();
         directionsService.route(
             {
-                destination: "1002 W College Ct, Urbana, IL",
+                destination: "232 Burwash Ave, Savoy, IL",
                 origin: "201 N Goodwin Ave, Urbana, IL",
                 travelMode: "DRIVING"
             },
             (results, status) => {
-                console.log(results);
-                console.log(status);
+                // console.log(results);
+                // console.log(status);
                 let location = `${props.countyName}, ${props.stateName}`;
-                setImgUrl("https://maps.googleapis.com/maps/api/staticmap?center=" + location + "&zoom=10&size=400x400&key=" + process.env.REACT_APP_API_KEY);
+                console.log(results.routes[0].overview_polyline);
+                setImgUrl("https://maps.googleapis.com/maps/api/staticmap?center=" + location
+                + "&zoom=10&size=400x400"
+                + "&path=weight:3%7Ccolor:blue%7Cenc:" + results.routes[0].overview_polyline
+                + "&key=" + process.env.REACT_APP_API_KEY);
+                console.log(imgUrl);
             }
         );
     };
     
     useEffect(
         () => {
-            console.log("ss");
+            //console.log("ss");
             /*if (!props.visible) {
                 return;
             }*/
-            console.log("he");
+            // console.log("he");
             const fetchLoader = async () => {
                 const loader = new Loader({apiKey: process.env.REACT_APP_API_KEY});
                 google.current = await loader.load();
