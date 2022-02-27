@@ -274,7 +274,9 @@ const Map = () => {
                         <input type="text" className="form-control" placeholder="Champaign" name="q" id="q" onChange={showResults} />
                         <div id="result">
                             <ul>
-                                {termMatches.map((term, i) => <li style={{cursor: "pointer"}} onClick={() => {
+                                {[].concat(termMatches).sort((a, b) => {
+                                    return heatMapping.current[countyNamesToFips.current[b]]["VLFS"] * 100 - heatMapping.current[countyNamesToFips.current[a]]["VLFS"] * 100
+                                }).map((term, i) => <li style={{cursor: "pointer"}} onClick={() => {
                                     console.log(`Clicked on ${term}`);
                                     const name = term.split(", ")[0];
                                     setOverlayCountyName(name);
