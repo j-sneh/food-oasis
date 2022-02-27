@@ -119,28 +119,6 @@ const createLegend = (svg, maxHeat, maxVLFS) => {
 };
 
 
-let countyNames = [];
-
-function showResults() {
-    var val = document.getElementById("q").value;
-
-    let res = document.getElementById("result");
-    res.innerHTML = '';
-    let list = '';
-    let terms = autocompleteMatch(val);
-    for (let i = 0; i < terms.length; i++) {
-      list += '<li>' + terms[i] + '</li>';
-    }
-    res.innerHTML = '<ul>' + list + '</ul>';
-}
-
-function autocompleteMatch(input) {
-    // Get all the terms that start with the input
-    let terms = countyNames.filter(function(term) {
-        return term.toLowerCase().startsWith(input.toLowerCase());
-    });
-    return terms.slice(0, 10);
-}
 
 const Map = () => {
     const d3Container = useRef(null);
@@ -149,6 +127,41 @@ const Map = () => {
     let [overlayVisible, setOverlayVisible] = useState(false);
     let [overlayCountyName, setOverlayCountyName] = useState("");
     let [overlayStateName, setOverlayStateName] = useState("");
+    let countyNames = [];
+
+    function showResults() {
+        var val = document.getElementById("q").value;
+    
+        let res = document.getElementById("result");
+        res.innerHTML = "";
+        let ul = document.createElement("ul");
+        let terms = autocompleteMatch(val);
+        for (let i = 0; i < terms.length; i++) {
+            let li = document.createElement("li");
+            li.innerHTML = terms[i];
+            li.style.cursor = "pointer";
+            // Add click event to each term
+            li.addEventListener("click", function() {
+                var name = this.innerHTML.split(", ")[0];
+                setOverlayCountyName(name);
+                var stateName = StateFips[name.split(", ")[1]];
+                setOverlayStateName(stateName);
+                setOverlayVisible(true);
+            });
+    
+            ul.appendChild(li);
+        }
+        res.appendChild(ul);
+    }
+
+    function autocompleteMatch(input) {
+        // Get all the terms that start with the input
+        let terms = countyNames.filter(function(term) {
+            return term.toLowerCase().startsWith(input.toLowerCase());
+        });
+        return terms.slice(0, 10);
+    }
+
 
     const loadMap = (foodInsecurityData) => {
         if (!d3Container.current || !tooltipContainer.current) {
@@ -201,7 +214,7 @@ const Map = () => {
                         .attr("transform", d3.event.transform)
                 });
             svg.call(zoom);
-
+            
             console.debug("Inserting SVG elements with d3...");
             const elem = svg.append("g")
                 .attr("class", "counties")
