@@ -267,7 +267,7 @@ const Map = () => {
     return (
         <div className="container">
         <div id="map-container" className="col-md-9">
-            <Overlay visible={overlayVisible} countyName={overlayCountyName} onClick={() => setOverlayVisible(false)} />
+            <Overlay visible={overlayVisible} countyName={overlayCountyName} stateName={overlayStateName} onClick={() => setOverlayVisible(false)} />
             <div id="tooltip" ref={tooltipContainer}></div>
             <svg id="map-canvas" width="960" height="600" ref={d3Container}></svg>
         </div>
