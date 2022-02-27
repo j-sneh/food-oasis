@@ -146,6 +146,10 @@ const Map = () => {
         return terms.slice(0, 10);
     }
 
+    const infoClick = (event) => {
+
+    }
+
 
     const loadMap = (foodInsecurityData) => {
         if (!d3Container.current || !tooltipContainer.current) {
@@ -191,13 +195,13 @@ const Map = () => {
             const legend = createLegend(svg, maxHeat, maxVLFS);      
 
             // zoom in and zoom out on mouse scroll
-            const zoom = d3.zoom()
-                .scaleExtent([1, 8])
-                .on("zoom", () => {
-                    svg.selectAll("path")
-                        .attr("transform", d3.event.transform)
-                });
-            svg.call(zoom);
+            // const zoom = d3.zoom()
+            //     .scaleExtent([1, 8])
+            //     .on("zoom", () => {
+            //         svg.selectAll("path")
+            //             .attr("transform", d3.event.transform)
+            //     });
+            // svg.call(zoom);
             
             console.debug("Inserting SVG elements with d3...");
             const elem = svg.append("g")
@@ -262,7 +266,15 @@ const Map = () => {
     );
 
     return (
-        <div className="container">
+        <div className="container mb-5">
+            <div className="row mb-2">
+                <div data-bs-toggle="modal" data-bs-target="#infoModal" style={{marginLeft: "96.5%", cursor: "pointer"}} onClick={infoClick()}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-info-circle" viewBox="0 0 16 16">
+                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                </svg>                 
+            </div>
+            </div>
             <div className="row">
                 <div id="map-container" className="col-md-9">
                     <Overlay visible={overlayVisible} countyName={overlayCountyName} stateName={overlayStateName} onClick={() => setOverlayVisible(false)} />
@@ -274,7 +286,9 @@ const Map = () => {
                         <input type="text" className="form-control" placeholder="Champaign" name="q" id="q" onChange={showResults} />
                         <div id="result">
                             <ul style={{paddingLeft: "5px", listStyle: "none"}} className="mt-2">
-                                {termMatches.map((term, i) => <li style={{cursor: "pointer"}} onClick={() => {
+                                {[].concat(termMatches).sort((a, b) => {
+                                    return heatMapping.current[countyNamesToFips.current[b]]["VLFS"] * 100 - heatMapping.current[countyNamesToFips.current[a]]["VLFS"] * 100
+                                }).map((term, i) => <li style={{cursor: "pointer"}} onClick={() => {
                                     console.log(`Clicked on ${term}`);
                                     const name = term.split(", ")[0];
                                     setOverlayCountyName(name);

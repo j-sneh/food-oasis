@@ -9,10 +9,13 @@ class App extends React.Component {
 
     render() {
         return (
-            <div className="App container">
-                <div className="row">
-                    <h1 className="col text-center">Food Oasis</h1>
-                </div>
+            <div className="App">
+                	<div id="text_container">
+		<h1 style={{fontSize: "75px"}} id="text">Food Oasis</h1>
+	</div>
+                {/* <div style={{backgroundColor: "black", paddingTop: "10px", paddingBottom: "10px"}} className="row mb-2">
+                    <h1 style={{color: "white", margin: "0px"}} className="col text-center">Food Oasis</h1>
+                </div> */}
                 <Map></Map>
             </div>
         );

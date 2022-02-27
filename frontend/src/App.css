@@ -1,3 +1,7 @@
+body {
+    background-color:rgb(247, 247, 247);
+}
+
 .main {
     display: flex;
     height: 100vh;
@@ -20,3 +24,42 @@ h1 {
 ul li {
     font-size: 20px;
 } 
+
+.vsc-initialized {
+    margin: 0;
+}
+
+#text_container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100vh;
+    background-image: url("background.png");
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+}
+
+#text {
+    font-weight: 100;
+    opacity: 1!important;
+    animation: animate 3s ease-out forwards;
+    animation-delay: 1s;
+}
+
+/* For animation */
+@keyframes animate {
+    0% {
+        letter-spacing: -15px;
+    }
+
+    20% {
+        letter-spacing: 10px;
+    }
+
+    100% {
+        letter-spacing: 2px;
+    }
+}
+
