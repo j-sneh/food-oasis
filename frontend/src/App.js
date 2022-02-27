@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Map from './Map';
+
 // import BarChart from './BarChart';
 import './App.css';
 
