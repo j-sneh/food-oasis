@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import './Map.css';
+import Overlay from './Overlay';
 import * as d3 from "d3";
 import * as topojson from "topojson";
 
@@ -60,6 +61,8 @@ const Map = () => {
     const d3Container = useRef(null);
     const tooltipContainer = useRef(null);
     const hasFetchedData = useRef(false);
+    let [overlayVisible, setOverlayVisible] = useState(false);
+    let [overlayCountyName, setOverlayCountyName] = useState("");
 
     const loadMap = (foodInsecurityData) => {
         if (!d3Container.current || !tooltipContainer.current) {
@@ -113,22 +116,37 @@ const Map = () => {
                 .attr("class", "counties")
                 .attr("cursor", "pointer");
             elem.selectAll("path")
+
+            const onMouseOver = (elem) => {
+                const coords = d3.mouse(d3.event.currentTarget);
+                tooltip
+                    .html(elem.properties.name + "<br>Food Insecure Population: " + (heatMapping[elem.id].VLFS * 100).toFixed(2) + "%")
+                    .style("left", coords[0] + 10 + "px")
+                    .style("top", coords[1] + "px")
+                    .style("opacity", 1);
+            };
+
+            const onMouseLeave = (elem) => {
+                tooltip
+                    .style("opacity", 0);
+            };
+
+            const onMouseClick = (elem) => {
+                setOverlayCountyName(elem.properties.name);
+                setOverlayVisible(true);
+            };
+
+            svg.append("g")
+                .attr("class", "counties")
+                .selectAll("path")
                 .data(topojson.feature(us, us.objects.counties).features)
                 .enter().append("path")
                 .attr("d", path)
                 .attr("fill", d => colorMapping(heatMapping[d.id]["HEAT"]))
                 .attr("stroke", "lightgrey")
-                .on("mouseover", (x) => {
-                    tooltip
-                        .html("<a href='https://www.google.com/search?q=food+banks+near+" + x.properties.name + "+county'>" + x.properties.name + "</a><br>Food Insecure Population: " + (heatMapping[x.id].VLFS * 100).toFixed(2) + "%")
-                        .style("left", d3.mouse(d3.event.currentTarget)[0]+10 + "px")
-                        .style("top", d3.mouse(d3.event.currentTarget)[1] + "px")
-                        .style("opacity", 1)
-                })
-                .on("mouseleave", (x) => {
-                    tooltip
-                        .style("opacity", 0)
-                });
+                .on("mouseover", onMouseOver)
+                .on("mouseleave", onMouseLeave)
+                .on("click", onMouseClick);
           
             svg.append("path")
                 .attr("class", "state-borders")
@@ -155,9 +173,9 @@ const Map = () => {
 
     return (
         <div id="map-container">
-            <svg id="map-canvas" width="960" height="600" ref={d3Container}></svg>
+            <Overlay visible={overlayVisible} countyName={overlayCountyName} onClick={() => setOverlayVisible(false)} />
             <div id="tooltip" ref={tooltipContainer}></div>
-            <div id="legend-container"></div>
+            <svg id="map-canvas" width="960" height="600" ref={d3Container}></svg>
         </div>
     );
 }

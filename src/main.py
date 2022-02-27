@@ -13,5 +13,12 @@ print(cleaned_data)
 
 cleaned_data.to_json("../data/processed/2020_food_insecurity.json", orient="records")
 
+food_manufacturers = pd.read_excel("../data/FoodProcess.xlsx")
+food_manufacturers_champaign = food_manufacturers[food_manufacturers["COUNTY"] == "Champaign County"]
+food_manufacturers_champaign = food_manufacturers_champaign[["ADDRESS", "CITY", "EXCESSFOOD_TONYEAR_HIGHEST"]]
+# print(data)
+# print(cleaned_data)
+# # FIR = Food Insecurity Rate
 
-# FIPS, VLFS, HUE
+print(food_manufacturers_champaign)
+food_manufacturers_champaign.to_json("../data/processed/food_manufacturers_champaign.json", orient="records")
