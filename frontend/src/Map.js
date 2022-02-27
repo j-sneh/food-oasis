@@ -276,7 +276,6 @@ const Map = () => {
             </input>
             <div id="result"></div>
         </form>
-        <button type="button" className="btn btn-primary">Primary</button>
         </div>
     );
 }
