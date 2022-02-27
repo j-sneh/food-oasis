@@ -266,16 +266,20 @@ const Map = () => {
 
     return (
         <div className="container">
-        <div id="map-container" className="col-md-9">
-            <Overlay visible={overlayVisible} countyName={overlayCountyName} stateName={overlayStateName} onClick={() => setOverlayVisible(false)} />
-            <div id="tooltip" ref={tooltipContainer}></div>
-            <svg id="map-canvas" width="960" height="600" ref={d3Container}></svg>
-        </div>
-        <form autoComplete="off">
-            <input type="text" className="form-control" placeholder="Champaign" name="q" id="q" onKeyUp={showResults}>
-            </input>
-            <div id="result"></div>
-        </form>
+            <div className="row">
+                <div id="map-container" className="col-md-9">
+                    <Overlay visible={overlayVisible} countyName={overlayCountyName} onClick={() => setOverlayVisible(false)} />
+                    <div id="tooltip" ref={tooltipContainer}></div>
+                    <svg id="map-canvas" width="960" height="600" ref={d3Container}></svg>
+                </div>
+                <div className="col">
+                    <form autoComplete="off">
+                        <input type="text" className="form-control" placeholder="Champaign" name="q" id="q" onKeyUp={showResults}>
+                        </input>
+                        <div id="result"></div>
+                    </form>
+                </div>
+            </div>
         </div>
     );
 }
