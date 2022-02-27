@@ -4,7 +4,6 @@ import Map from './Map';
 
 // import BarChart from './BarChart';
 import './App.css';
-import 'bootstrap/dist/css/bootstrap.min.css';
 
 class App extends React.Component {
 

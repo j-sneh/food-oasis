@@ -64,7 +64,7 @@ const StateFips = {
     "06": "CA",
     "08": "CO",
     "09": "CT"
-  };
+};
 
 const countyDataSource = "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-albers-10m.json";
 
@@ -214,12 +214,12 @@ const Map = () => {
                     .html(elem.properties.name + "<br>Food Insecure Population: " + (heatMapping[elem.id].VLFS * 100).toFixed(2) + "%")
                     .style("left", coords[0] + 10 + "px")
                     .style("top", coords[1] + "px")
-                    .style("opacity", 1);
+                    .style("display", "block");
             };
 
             const onMouseLeave = (elem) => {
                 tooltip
-                    .style("opacity", 0);
+                    .style("display", "none");
             };
 
             const onMouseClick = (elem) => {
