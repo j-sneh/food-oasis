@@ -125,36 +125,11 @@ const Map = () => {
     let [overlayVisible, setOverlayVisible] = useState(false);
     let [overlayCountyName, setOverlayCountyName] = useState("");
     let [overlayStateName, setOverlayStateName] = useState("");
-    let countyNames = [];
+    let [termMatches, setTermMatches] = useState([]);
+    let countyNames = useRef([]);
 
-    function showResults() {
-        console.log("clicked!");
-        var val = document.getElementById("q").value;
-    
-        let res = document.getElementById("result");
-        // Delete all children of result div
-        while (res.firstChild) {
-            res.removeChild(res.firstChild);
-        }
-
-        let ul = document.createElement("ul");
-        let terms = autocompleteMatch(val);
-        for (let i = 0; i < terms.length; i++) {
-            let li = document.createElement("li");
-            li.innerHTML = terms[i];
-            li.style.cursor = "pointer";
-            // Add click event to each term
-            li.addEventListener("click", function() {
-                var name = this.innerHTML.split(", ")[0];
-                setOverlayCountyName(name);
-                var stateName = this.innerHTML.split(", ")[1];
-                setOverlayStateName(stateName);
-                setOverlayVisible(true);
-            });
-    
-            ul.appendChild(li);
-        }
-        res.appendChild(ul);
+    const showResults = (event) => {
+        setTermMatches(autocompleteMatch(event.target.value));
     }
 
     function autocompleteMatch(input) {
@@ -163,7 +138,7 @@ const Map = () => {
         }
 
         // Get all the terms that start with the input
-        let terms = countyNames.filter(function(term) {
+        let terms = countyNames.current.filter(function(term) {
             return term.toLowerCase().startsWith(input.toLowerCase());
         });
         return terms.slice(0, 10);
@@ -181,7 +156,7 @@ const Map = () => {
 
             let geometries = us.objects.counties.geometries;
             for (let i = 0; i < geometries.length; i++) {
-                countyNames.push(geometries[i].properties.name + ", " + StateFips[geometries[i].id.substring(0, 2)]);
+                countyNames.current.push(geometries[i].properties.name + ", " + StateFips[geometries[i].id.substring(0, 2)]);
             }
 
             console.debug("Computing heat mapping...");
@@ -294,9 +269,19 @@ const Map = () => {
                 </div>
                 <div className="col">
                     <form autoComplete="off">
-                        <input type="text" className="form-control" placeholder="Champaign" name="q" id="q" onKeyUp={showResults}>
-                        </input>
-                        <div id="result"></div>
+                        <input type="text" className="form-control" placeholder="Champaign" name="q" id="q" onChange={showResults} />
+                        <div id="result">
+                            <ul>
+                                {termMatches.map((term, i) => <li style={{cursor: "pointer"}} onClick={() => {
+                                    console.log(`Clicked on ${term}`);
+                                    const name = term.split(", ")[0];
+                                    setOverlayCountyName(name);
+                                    const stateName = term.split(", ")[1];
+                                    setOverlayStateName(stateName);
+                                    setOverlayVisible(true);
+                                }} key={i}>{term}</li>)}
+                            </ul>
+                        </div>
                     </form>
                 </div>
             </div>
