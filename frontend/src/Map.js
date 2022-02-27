@@ -6,6 +6,10 @@ import * as d3 from "d3";
 import * as topojson from "topojson";
 import state_data from "./StateFips.json";
 
+setTimeout(function () {
+    window.scrollTo(0,document.body.scrollHeight);
+}, 3000);
+
 const StateFips = {
     "10": "DE",
     "11": "DC",
@@ -266,14 +270,15 @@ const Map = () => {
     );
 
     return (
-        <div className="container mb-5">
+        <div>
+            <div style={{marginBottom: "80px"}} className="container">
             <div className="row mb-2">
-                <div data-bs-toggle="modal" data-bs-target="#infoModal" style={{marginLeft: "96.5%", cursor: "pointer"}} onClick={infoClick()}>
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-info-circle" viewBox="0 0 16 16">
-                <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
-                <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
-                </svg>                 
-            </div>
+                <div data-bs-toggle="modal" data-bs-target="#infoModal" style={{cursor: "pointer"}} onClick={infoClick()}>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" className="bi bi-info-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                    <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533L8.93 6.588zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0z"/>
+                    </svg>                 
+                </div>
             </div>
             <div className="row">
                 <div id="map-container" className="col-md-9">
@@ -283,7 +288,7 @@ const Map = () => {
                 </div>
                 <div className="col">
                     <form autoComplete="off">
-                        <input type="text" className="form-control" placeholder="Champaign" name="q" id="q" onChange={showResults} />
+                        <input type="text" className="form-control" placeholder="Search County" name="q" id="q" onChange={showResults} />
                         <div id="result">
                             <ul style={{paddingLeft: "5px", listStyle: "none"}} className="mt-2">
                                 {[].concat(termMatches).sort((a, b) => {
@@ -303,6 +308,11 @@ const Map = () => {
                     </form>
                 </div>
             </div>
+            </div>
+            <footer className="text-center text-lg-start text-white" style={{backgroundColor: "#3e4551"}}>
+                <div className="text-center p-3" style={{backgroundColor: "rgba(0, 0, 0, 0.2)"}}> Made with ❤️ by <a style={{color: "rgb(255, 255, 255)"}} target="_blank" href="https://github.com/AdeliaSolarman">Adelia</a>, <a style={{color: "rgb(255, 255, 255)"}} target="_blank" href="https://github.com/Debusan13">Devak</a>, <a style={{color: "rgb(255, 255, 255)"}} target="_blank" href="https://github.com/imathur1">Ishaan</a>, <a style={{color: "rgb(255, 255, 255)"}} target="_blank" href="https://github.com/j-sneh">Jonathan</a>, <a style={{color: "rgb(255, 255, 255)"}} target="_blank" href="https://github.com/LouisAsanaka">Louis</a>, and <a style={{color: "rgb(255, 255, 255)"}} target="_blank" href="https://github.com/21xiaofanli">Xiaofan</a>
+                </div>
+            </footer>
         </div>
     );
 }

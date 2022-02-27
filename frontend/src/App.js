@@ -11,7 +11,7 @@ class App extends React.Component {
         return (
             <div className="App">
                 	<div id="text_container">
-		<h1 style={{fontSize: "75px"}} id="text">Food Oasis</h1>
+		<h1 style={{fontSize: "100px"}} id="text">Food Oasis</h1>
 	</div>
                 {/* <div style={{backgroundColor: "black", paddingTop: "10px", paddingBottom: "10px"}} className="row mb-2">
                     <h1 style={{color: "white", margin: "0px"}} className="col text-center">Food Oasis</h1>

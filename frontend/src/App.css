@@ -39,12 +39,13 @@ ul li {
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-position: center;
+    background-size: 80%;
 }
 
 #text {
     font-weight: 100;
     opacity: 1!important;
-    animation: animate 3s ease-out forwards;
+    animation: animate 2s ease-out forwards;
     animation-delay: 1s;
 }
 
