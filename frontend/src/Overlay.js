@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import ReactDOM from 'react-dom';
 import originPoints from "./originPoints.json";
+import originPaths from "./originPaths.json";
 import './Overlay.css';
 import { Loader } from '@googlemaps/js-api-loader';
 import OriginsData from "./food_manufacturers_champaign.json";
@@ -12,31 +13,44 @@ const Overlay = (props) => {
     // var origins = GetOriginsPoints(props, props.countyName, props.stateName);
 
     const loadDirections = (g) => {
+        if (!props.visible) {
+            return;
+        }
         const directionsService = new g.maps.DirectionsService();
         let location = `${props.countyName}, ${props.stateName}`;
         let paths = "";
-        Promise.all(OriginsData.map(coords => {
-            return directionsService.route(
-                {
-                    destination: "1012 W Illinois St, Urbana, IL",
-                    origin: new g.maps.LatLng(coords.lat, coords.lng),
-                    travelMode: "DRIVING"
-                }
-                   // paths = paths + "&path=weight:3%7Ccolor:blue%7Cenc:" + results.routes[0].overview_polyline;
-            );
-        })).then(
-            (results) => {
-                console.log(results);
-            }
-        );
-
-        console.log("https://maps.googleapis.com/maps/api/staticmap?center=" + location
-        + "&zoom=10&size=400x400" + paths 
-        + "&key=" + process.env.REACT_APP_API_KEY)
-
-        // setImgUrl("https://maps.googleapis.com/maps/api/staticmap?center=" + location
-        //         + "&zoom=10&size=400x400" + paths 
-        //         + "&key=" + process.env.REACT_APP_API_KEY);
+        for (let path of originPaths) {
+            paths = paths + "&path=weight:3%7Ccolor:blue%7Cenc:" + path['polyline'];
+        }
+        // const originsDataSliced = originPoints.slice(18, 24);
+        // Promise.all(originPoints.map(coords => {
+        //     console.log(coords);
+        //     if (coords === null) {
+        //         return Promise.resolve(null);
+        //     }
+        //     return directionsService.route(
+        //         {
+        //             destination: "1012 W Illinois St, Urbana, IL",
+        //             origin: new g.maps.LatLng(coords.lat, coords.lng),
+        //             travelMode: "DRIVING"
+        //         }
+        //            // paths = paths + "&path=weight:3%7Ccolor:blue%7Cenc:" + results.routes[0].overview_polyline;
+        //     );
+        // })).then(
+        //     (results) => {
+        //         console.log(results.map((result) => {
+        //             if (result === null) {
+        //                 return {};
+        //             } 
+        //             return {
+        //                 polyline: result.routes[0].overview_polyline
+        //             };
+        //         }));
+        //     }
+        // );
+        const url = `https://maps.googleapis.com/maps/api/staticmap?center=${location}&zoom=10&size=400x400${paths}&key=${process.env.REACT_APP_API_KEY}`;
+        console.log(url);
+        setImgUrl(url);
     };
 
     const getOriginsPoints = (county, state) => {
