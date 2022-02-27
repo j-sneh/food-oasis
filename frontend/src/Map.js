@@ -273,7 +273,7 @@ const Map = () => {
                     <form autoComplete="off">
                         <input type="text" className="form-control" placeholder="Champaign" name="q" id="q" onChange={showResults} />
                         <div id="result">
-                            <ul>
+                            <ul style={{paddingLeft: "5px", listStyle: "none"}} className="mt-2">
                                 {termMatches.map((term, i) => <li style={{cursor: "pointer"}} onClick={() => {
                                     console.log(`Clicked on ${term}`);
                                     const name = term.split(", ")[0];
