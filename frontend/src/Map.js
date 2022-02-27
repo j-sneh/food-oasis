@@ -127,6 +127,8 @@ const Map = () => {
     let [overlayStateName, setOverlayStateName] = useState("");
     let [termMatches, setTermMatches] = useState([]);
     let countyNames = useRef([]);
+    let countyNamesToFips = useRef({});
+    let heatMapping = useRef({});
 
     const showResults = (event) => {
         setTermMatches(autocompleteMatch(event.target.value));
@@ -157,10 +159,10 @@ const Map = () => {
             let geometries = us.objects.counties.geometries;
             for (let i = 0; i < geometries.length; i++) {
                 countyNames.current.push(geometries[i].properties.name + ", " + StateFips[geometries[i].id.substring(0, 2)]);
+                countyNamesToFips.current[geometries[i].properties.name + ", " + StateFips[geometries[i].id.substring(0, 2)]] = geometries[i].id;
             }
 
             console.debug("Computing heat mapping...");
-            let heatMapping = {};
             let maxHeat = 0;
             let maxVLFS = 0;
             for (let i = 0; i < foodInsecurityData.length; i++) {
@@ -170,7 +172,7 @@ const Map = () => {
                     fips = "0" + fips;
                 }
         
-                heatMapping[fips] = {
+                heatMapping.current[fips] = {
                     "HEAT": foodInsecurityData[i]["HEAT"],
                     "VLFS": foodInsecurityData[i]["VLFS"]
                 }
@@ -206,7 +208,7 @@ const Map = () => {
             const onMouseOver = (elem) => {
                 const coords = d3.mouse(d3.event.currentTarget);
                 tooltip
-                    .html(elem.properties.name + "<br>Food Insecure Population: " + (heatMapping[elem.id].VLFS * 100).toFixed(2) + "%")
+                    .html(elem.properties.name + "<br>Food Insecure Population: " + (heatMapping.current[elem.id].VLFS * 100).toFixed(2) + "%")
                     .style("left", coords[0] + 20 + "px")
                     .style("top", coords[1] + "px")
                     .style("display", "block");
@@ -230,7 +232,7 @@ const Map = () => {
                 .data(topojson.feature(us, us.objects.counties).features)
                 .enter().append("path")
                 .attr("d", path)
-                .attr("fill", d => colorMapping(heatMapping[d.id]["HEAT"]))
+                .attr("fill", d => colorMapping(heatMapping.current[d.id]["HEAT"]))
                 .attr("stroke", "lightgrey")
                 .on("mouseover", onMouseOver)
                 .on("mouseleave", onMouseLeave)
@@ -279,7 +281,9 @@ const Map = () => {
                                     const stateName = term.split(", ")[1];
                                     setOverlayStateName(stateName);
                                     setOverlayVisible(true);
-                                }} key={i}>{term}</li>)}
+                                }} key={i}>{term} <span style={{backgroundColor: colorMapping(heatMapping.current[countyNamesToFips.current[term]]["HEAT"]), fontSize: "12px"}}
+                                    className="badge float-end">{(heatMapping.current[countyNamesToFips.current[term]]["VLFS"] * 100).toFixed(2) + "%"}
+                                    </span></li>)}
                             </ul>
                         </div>
                     </form>
