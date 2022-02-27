@@ -118,8 +118,6 @@ const createLegend = (svg, maxHeat, maxVLFS) => {
     return legend;
 };
 
-
-
 const Map = () => {
     const d3Container = useRef(null);
     const tooltipContainer = useRef(null);
@@ -130,10 +128,15 @@ const Map = () => {
     let countyNames = [];
 
     function showResults() {
+        console.log("clicked!");
         var val = document.getElementById("q").value;
     
         let res = document.getElementById("result");
-        res.innerHTML = "";
+        // Delete all children of result div
+        while (res.firstChild) {
+            res.removeChild(res.firstChild);
+        }
+
         let ul = document.createElement("ul");
         let terms = autocompleteMatch(val);
         for (let i = 0; i < terms.length; i++) {
@@ -144,7 +147,7 @@ const Map = () => {
             li.addEventListener("click", function() {
                 var name = this.innerHTML.split(", ")[0];
                 setOverlayCountyName(name);
-                var stateName = StateFips[name.split(", ")[1]];
+                var stateName = this.innerHTML.split(", ")[1];
                 setOverlayStateName(stateName);
                 setOverlayVisible(true);
             });
@@ -155,6 +158,10 @@ const Map = () => {
     }
 
     function autocompleteMatch(input) {
+        if (input === "") {
+            return [];
+        }
+
         // Get all the terms that start with the input
         let terms = countyNames.filter(function(term) {
             return term.toLowerCase().startsWith(input.toLowerCase());
@@ -225,7 +232,7 @@ const Map = () => {
                 const coords = d3.mouse(d3.event.currentTarget);
                 tooltip
                     .html(elem.properties.name + "<br>Food Insecure Population: " + (heatMapping[elem.id].VLFS * 100).toFixed(2) + "%")
-                    .style("left", coords[0] + 10 + "px")
+                    .style("left", coords[0] + 20 + "px")
                     .style("top", coords[1] + "px")
                     .style("display", "block");
             };
@@ -281,7 +288,7 @@ const Map = () => {
         <div className="container">
             <div className="row">
                 <div id="map-container" className="col-md-9">
-                    <Overlay visible={overlayVisible} countyName={overlayCountyName} onClick={() => setOverlayVisible(false)} />
+                    <Overlay visible={overlayVisible} countyName={overlayCountyName} stateName={overlayStateName} onClick={() => setOverlayVisible(false)} />
                     <div id="tooltip" ref={tooltipContainer}></div>
                     <svg id="map-canvas" width="960" height="600" ref={d3Container}></svg>
                 </div>
