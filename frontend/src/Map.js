@@ -4,7 +4,7 @@ import './Map.css';
 import Overlay from './Overlay';
 import * as d3 from "d3";
 import * as topojson from "topojson";
-
+import state_data from "./StateFips.json";
 const countyDataSource = "https://cdn.jsdelivr.net/npm/us-atlas@3/counties-albers-10m.json";
 
 const colorMapping = (value, rel_max) => {
@@ -19,6 +19,7 @@ const Map = () => {
     const hasFetchedData = useRef(false);
     let [overlayVisible, setOverlayVisible] = useState(false);
     let [overlayCountyName, setOverlayCountyName] = useState("");
+    let [overlayStateName, setOverlayStateName] = useState("");
 
     const loadMap = (foodInsecurityData) => {
         if (!d3Container.current || !tooltipContainer.current) {
@@ -70,6 +71,8 @@ const Map = () => {
 
             const onMouseClick = (elem) => {
                 setOverlayCountyName(elem.properties.name);
+                const stateFIPS = elem.id.substring(0,2);
+                setOverlayStateName(state_data[stateFIPS]);
                 setOverlayVisible(true);
             };
 
