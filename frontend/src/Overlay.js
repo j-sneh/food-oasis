@@ -19,8 +19,11 @@ const Overlay = (props) => {
         const directionsService = new g.maps.DirectionsService();
         let location = `${props.countyName}, ${props.stateName}`;
         let paths = "";
+        let colors = ["red", "orange", "yellow", "green", "purple"];
+        let i = 0;
         for (let path of originPaths) {
-            paths = paths + "&path=weight:3%7Ccolor:blue%7Cenc:" + path['polyline'];
+            paths = paths + `&path=weight:3%7Ccolor:${colors[i % colors.length]}%7Cenc:` + path['polyline'];
+            i++;
         }
         // const originsDataSliced = originPoints.slice(18, 24);
         // Promise.all(originPoints.map(coords => {
