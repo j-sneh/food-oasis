@@ -3,10 +3,34 @@ import ReactDOM from 'react-dom';
 
 import './Overlay.css';
 import { Loader } from '@googlemaps/js-api-loader';
+import OriginsData from "./food_manufacturers_champaign.json";
+import $ from "jquery";
+
+function GetOriginsPoints(props, county, state) {
+    var result = undefined;
+    if(props.countyName === "Champaign") {
+        $.ajaxSetup({
+            async: false
+        });
+        
+        result = OriginsData.map((elem) => {
+            let http_addr = elem.ADDRESS + " " + elem.CITY + " " + props.stateName + "&key=" + process.env.REACT_APP_API_KEY;
+            let a = "https://maps.googleapis.com/maps/api/geocode/json?address=" + http_addr.replaceAll(" ", "%20");
+            console.log(a);
+            // return a.results.geometry.location
+        });
+    }
+    $.ajaxSetup({
+        async: true
+    });
+    return result;
+}
+
 
 const Overlay = (props) => {
     let [imgUrl, setImgUrl] = useState("");
     let google = useRef(null);
+    var origins = GetOriginsPoints(props, props.countyName, props.stateName);
 
     const loadDirections = (g) => {
         const directionsService = new g.maps.DirectionsService();

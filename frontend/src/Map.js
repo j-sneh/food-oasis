@@ -212,7 +212,7 @@ const Map = () => {
                 const coords = d3.mouse(d3.event.currentTarget);
                 tooltip
                     .html(elem.properties.name + "<br>Food Insecure Population: " + (heatMapping[elem.id].VLFS * 100).toFixed(2) + "%")
-                    .style("left", coords[0] + 10 + "px")
+                    .style("left", coords[0] + 20 + "px")
                     .style("top", coords[1] + "px")
                     .style("display", "block");
             };
@@ -268,7 +268,7 @@ const Map = () => {
         <div className="container">
             <div className="row">
                 <div id="map-container" className="col-md-9">
-                    <Overlay visible={overlayVisible} countyName={overlayCountyName} onClick={() => setOverlayVisible(false)} />
+                    <Overlay visible={overlayVisible} countyName={overlayCountyName} stateName={overlayStateName} onClick={() => setOverlayVisible(false)} />
                     <div id="tooltip" ref={tooltipContainer}></div>
                     <svg id="map-canvas" width="960" height="600" ref={d3Container}></svg>
                 </div>
