@@ -127,14 +127,14 @@ const Overlay = (props) => {
         <div id="overlay-background" style={{ display: cssDisplay }} onClick={props.onClick}>
             <div id="overlay" style={{ display: cssDisplay }}>
                 <img src={imgUrl} style={{width: "400px", height: "400px"}} />
-                <ul className="pantry-list">
-                    <li style={{listStyle: "none"}}><h3>Pantries Nearby</h3></li>
+                <ol className="pantry-list">
+                    <h3>Pantries Nearby</h3>
                     {props.countyName === "Champaign" && 
                         pantryInformation.map((pantry, i) => {
                             return <li className="pantry-entry" key={i}>{pantry.name}</li>;
                         })
                     }
-                </ul>
+                </ol>
             </div>
         </div>
     );

@@ -71,7 +71,7 @@
     height: 400px;
     overflow: auto;
     /* list-style: none; */
-    /* padding-left: 10px; */
+    padding-left: 35px;
 }
 
 .pantry-entry {

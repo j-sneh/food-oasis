@@ -147,7 +147,7 @@ const Map = () => {
         let terms = countyNames.current.filter(function(term) {
             return term.toLowerCase().startsWith(input.toLowerCase());
         });
-        return terms.slice(0, 10);
+        return terms.slice(0, 20);
     }
 
     const infoClick = (event) => {
