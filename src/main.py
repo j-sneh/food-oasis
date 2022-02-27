@@ -13,5 +13,12 @@ print(cleaned_data)
 
 cleaned_data.to_json("../data/processed/2020_food_insecurity.json", orient="records")
 
+data_manufacturers = pd.read_excel("../data/FoodProcess.xlsx")
+# print(data)
+# print(cleaned_data)
+# # FIR = Food Insecurity Rate
+
+data_manufacturers.to_json("../data/processed/food_manufacturers.json", orient="records")
+
 
 # FIPS, VLFS, HUE
