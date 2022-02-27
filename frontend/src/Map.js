@@ -72,7 +72,13 @@ const Map = () => {
         console.debug(foodInsecurityData);
         d3.json(countyDataSource, (error, us) => {
             if (error) throw error;
-        
+
+            let geometries = us.objects.counties.geometries;
+            let countyNames = [];
+            for (let i = 0; i < geometries.length; i++) {
+                countyNames.push(geometries[i].properties.name + ", " + geometries[i].properties.state);
+            }
+
             console.debug("Computing heat mapping...");
             let heatMapping = {};
             let maxHeat = 0;
@@ -172,11 +178,12 @@ const Map = () => {
     );
 
     return (
-        <div id="map-container">
+        <div id="map-container" className="col-md-9">
             <Overlay visible={overlayVisible} countyName={overlayCountyName} onClick={() => setOverlayVisible(false)} />
             <div id="tooltip" ref={tooltipContainer}></div>
             <svg id="map-canvas" width="960" height="600" ref={d3Container}></svg>
         </div>
+        
     );
 }
 
