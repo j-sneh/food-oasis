@@ -11,6 +11,9 @@ class App extends React.Component {
     render() {
         return (
             <div className="App container">
+                <div className="row">
+                    <h1 className="col text-center">Food Oasis</h1>
+                </div>
                 <Map></Map>
             </div>
         );
